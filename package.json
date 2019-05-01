@@ -11,7 +11,7 @@
   "author": "gkm2806",
   "license": "ISC",
   "dependencies": {
-    "anychart": "^8.3.0",
+    "anychart": "~8.3.0",
     "bcrypt": "^3.0.6",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
