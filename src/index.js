@@ -20,5 +20,5 @@ app.use('/api/aulas', aulaRouter);
 app.use('/api/professores', ProfessorRouter);
 app.use('/api/locais', LocalRouter);
 app.use('/api/users', UserRouter);
-console.log("PORTA = ", port)
-app.listen(port, () => console.log(`online and ready!`))
+console.log("PORT = ", port)
+app.listen(port, () => console.log(`Welcome aboard captain, all systems online!`))
