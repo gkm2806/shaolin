@@ -19,5 +19,5 @@ app.use('/api/aulas', aulaRouter);
 app.use('/api/professores', ProfessorRouter);
 app.use('/api/locais', LocalRouter);
 app.use('/api/users', UserRouter);
-
+console.log("PORTA = ", process.env.PORT)
 app.listen(process.env.PORT || 4000, () => console.log(`online and ready!`))
