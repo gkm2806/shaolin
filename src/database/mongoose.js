@@ -1,7 +1,7 @@
 import mongoose from "mongoose"
 
 import "dotenv/config"
-
+console.log("OLHA ESSA PORRA AKI OH: ", process.env.DATABASE_URL)
 mongoose.connect("mongodb+srv://deploy:deploy@cluster0-ljd0z.mongodb.net/test?retryWrites=true",{ useNewUrlParser: true } )
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useFindAndModify', false);
