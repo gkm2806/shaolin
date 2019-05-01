@@ -1,8 +1,11 @@
 import express from 'express';
 import Usuarios from '../models/users';
+import {generateToken} from "../models/users"
 import bcrypt from "bcrypt"
+import Auth from "../auth/auth"
 
 const UserRouter = express.Router();
+
 
 UserRouter.route('/')
     .get((req, res) => {
@@ -10,12 +13,24 @@ UserRouter.route('/')
             res.json(users)
         })
     })
+    .post((req,res,next) => Auth(req,res,next))
     .post(async (req, res) => {
-        req.body.password = bcrypt.hashSync(req.body.password, 10)
-        let Usuario = new Usuarios({username: req.body.username, password: req.body.password});
-        await Usuario.save()
-        console.log("Usuario criado")
-        res.status(201).send(Usuario)
+        try {
+            let findUser = await Usuarios.findOne({ username: req.body.username }).exec()
+            if (findUser) {
+                return res.status(400).send({ message: "Usuario Já existente" });
+            }
+            req.body.password = bcrypt.hashSync(req.body.password, 10)
+            let Usuario = new Usuarios({ username: req.body.username, password: req.body.password });
+            
+            await Usuario.save()
+            Usuario.password = undefined
+            console.log("Usuario \""+req.body.username+"\" criado")
+            res.status(201).send({...Usuario._doc, token:generateToken({id: Usuario._id})});
+        } catch (error) {
+            console.log(error)
+            res.status(500).send(error);
+        }
     })
 
 UserRouter.route('/DELETEALL')
@@ -30,21 +45,25 @@ UserRouter.route('/:userId')
     })
 
 UserRouter.route("/login")
-    .post(async (req,res) => {
+    .post(async (req, res) => {
         try {
             let user = await Usuarios.findOne({ username: req.body.username })
-            if(!user) {
+            if (!user) {
                 return res.status(400).send({ message: "!User" });
             }
-            if(!bcrypt.compareSync(req.body.password.toString(), user.password)) {
+            if (!bcrypt.compareSync(req.body.password.toString(), user.password)) {
                 console.log("invalid password")
                 return res.status(400).send({ message: "invalid password" });
             }
-            res.send({ message: "success" });
+            user.password = ""
+            
+            res.send({
+                ...user._doc, 
+                token:generateToken({id: user._id})
+            });
         } catch (error) {
             console.log(error)
             res.status(500).send(error);
-            
         }
     });
 
