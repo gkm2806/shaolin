@@ -1,8 +1,9 @@
 import mongoose from "mongoose"
 
 import "dotenv/config"
+var a = process.env.DATABASE_URL
 console.log("OLHA ESSA PORRA AKI OH: ", process.env.DATABASE_URL)
-mongoose.connect(process.env.DATABASE_URL,{ useNewUrlParser: true } )
+mongoose.connect(a.toString(),{ useNewUrlParser: true } )
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useFindAndModify', false);
 mongoose.set('useCreateIndex', true)
