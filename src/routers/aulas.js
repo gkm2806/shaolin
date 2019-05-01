@@ -1,12 +1,8 @@
 import express from 'express';
-import {Aula} from '../models/aula';
+import Aula from '../models/aula';
 import moment from "moment"
 
 const aulaRouter = express.Router();
-
-const find = () => {
-    
-}
 
 aulaRouter.route('/')
     .get((req, res) => {
