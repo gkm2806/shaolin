@@ -7,6 +7,7 @@ import UserRouter from "./routers/user"
 import aulaRouter from './routers/aulas';
 import ProfessorRouter from './routers/professores'
 import LocalRouter from './routers/locais'
+const port = process.env.PORT || 8080
 
 var app = express();
 app.use(bodyParser.json())
@@ -19,5 +20,5 @@ app.use('/api/aulas', aulaRouter);
 app.use('/api/professores', ProfessorRouter);
 app.use('/api/locais', LocalRouter);
 app.use('/api/users', UserRouter);
-console.log("PORTA = ", process.env.PORT)
-app.listen(process.env.PORT || 4000, () => console.log(`online and ready!`))
+console.log("PORTA = ", port)
+app.listen(port, () => console.log(`online and ready!`))
