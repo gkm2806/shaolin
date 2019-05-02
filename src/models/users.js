@@ -12,8 +12,14 @@ export function generateToken(params={}){
 }
 const usuariosModel = new Schema({
     username: { type: String, required: true},
-    password: { type: String, required: true}
+    password: { type: String, required: true, select: false},
+    permission: {type: Number, default: 1}
 
+})
+
+usuariosModel.pre('save', function(next){
+    console.log("criando Usuario")
+    next()
 })
 
 export default mongoose.model('Usuarios', usuariosModel)

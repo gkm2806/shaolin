@@ -7,7 +7,7 @@ import UserRouter from "./routers/user"
 import aulaRouter from './routers/aulas';
 import ProfessorRouter from './routers/professores'
 import LocalRouter from './routers/locais'
-const port = process.env.PORT || 8080
+const port = process.env.PORT || 4000
 
 var app = express();
 app.use(bodyParser.json())

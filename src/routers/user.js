@@ -21,7 +21,7 @@ UserRouter.route('/')
                 return res.status(400).send({ message: "Usuario Já existente" });
             }
             req.body.password = bcrypt.hashSync(req.body.password, 10)
-            let Usuario = new Usuarios({ username: req.body.username, password: req.body.password });
+            let Usuario = new Usuarios({...req.body});
             
             await Usuario.save()
             Usuario.password = undefined
@@ -39,15 +39,19 @@ UserRouter.route('/DELETEALL')
             res.send("deletado")
         })
     })
-UserRouter.route('/:userId')
-    .put((req, res) => {
 
+UserRouter.route('/:id')
+    .get(async (req, res) => {
+        let findUser = await Usuarios.findOne({ _id: req.params.id })
+        console.log(findUser._doc)
+        if(!findUser) res.status(400).send("No user found with this id")
+        res.status(200).send(findUser._doc)
     })
 
 UserRouter.route("/login")
     .post(async (req, res) => {
         try {
-            let user = await Usuarios.findOne({ username: req.body.username })
+            const user = await Usuarios.findOne({ username: req.body.username }).select('+password')
             if (!user) {
                 return res.status(400).send({ message: "!User" });
             }
@@ -56,9 +60,10 @@ UserRouter.route("/login")
                 return res.status(400).send({ message: "invalid password" });
             }
             user.password = ""
-            
             res.send({
-                ...user._doc, 
+                username: user.username,
+                permission: user.permission,
+                id: user._id,
                 token:generateToken({id: user._id})
             });
         } catch (error) {

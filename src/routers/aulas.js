@@ -1,6 +1,7 @@
 import express from 'express';
 import Aula from '../models/aula';
 import moment from "moment"
+import Auth from "../auth/auth"
 
 const aulaRouter = express.Router();
 
@@ -15,12 +16,13 @@ aulaRouter.route('/')
         let inicioMoment = moment(req.body.horaInicio,"HH:mm");
         let fimMoment = moment(req.body.horaFim,"HH:mm");
         let aulas = []
-
+        console.log("Oi?")
         while(inicioMoment.diff(fimMoment,"minutes") < -30){
             if((inicioMoment.format("HH:mm")) == "09:15" || (inicioMoment.format("HH:mm") == "15:15")) inicioMoment.add(15,"minutes") //intervalos
             if((inicioMoment.format("HH:mm")) == "12:30") inicioMoment.add(30,"minutes") //mudança de turno
             req.body.horaInicio = inicioMoment.format("HH:mm")
             let aula = new Aula(req.body);
+            console.log( req.body.userId)
             const {sala,turma,professor,horaInicio, dia} = aula
             await Aula.find({
                 "horaInicio": horaInicio,

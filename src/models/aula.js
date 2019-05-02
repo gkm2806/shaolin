@@ -1,10 +1,12 @@
-import mongoose, {Schema} from 'mongoose';
+import mongoose from 'mongoose';
 import cuid from "cuid"
 import moment from "moment"
 
+const Schema = mongoose.Schema;
 
 const aulaModel = new Schema({
     id: {type: String},
+    creationdate: {type: String, required: true},
     sala: {type: String},
     materia: {type: String},
     turma: {type: String},
@@ -12,13 +14,16 @@ const aulaModel = new Schema({
     horaFim: {type: String},
     dia: {type: String},
     professor: {type: String},
-    createdAt: {Type: Number},
-    createdBy: {Type: String}
+    createdBy: {Type: String},
+    fixa: {Type: Boolean, default: false}
 });
 
 aulaModel.pre("save", function(next) {
-    this.id = cuid();
-    this.createdAt = moment.now();
+    console.log(this)
+    let today = moment.now()
+    console.log(today)
+
+
     next();
 });
 
