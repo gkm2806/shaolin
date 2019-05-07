@@ -12,6 +12,8 @@ LocalRouter.route('/')
     })
     .post(async (req, res) => {
         let local = new Local(req.body);
+        console.log("req: ", req.body)
+        console.log("Local: ", local)
         local.save()
         res.status(201).send(local)
     })
@@ -22,13 +24,11 @@ LocalRouter.route('/DELETEALL')
         })
     })
 LocalRouter.route('/:LocalId')
-    .put((req, res) => {
-        /*
-        req.Local.title = req.body.title;
-        req.Local.author = req.body.author;
-        req.Local.save()
-        res.json(req.Local)
-        */
+    .get(async (req, res) => {
+        let findUser = await Local.findOne({ _id: req.params.LocalId })
+        if (!findUser) res.status(400).send("No Local found with this id")
+        console.log(findUser._doc)
+        res.status(200).send(findUser._doc)
     })
     .patch((req, res) => {
         if (req.body._id) {
@@ -39,6 +39,30 @@ LocalRouter.route('/:LocalId')
         }
         req.local.save()
         res.json(req.local)
-    })//patch
+    })
+
+/***************  B E A C O N S ****************/
+
+LocalRouter.route('/:LocalId/beacon')
+    .put(async (req, res) => {
+        var newBeacon = req.body.beacon;
+        var id = req.params.LocalId;
+
+        var update = { beacon: newBeacon };
+        Local.findOneAndUpdate({ "_id": id }, update, { new: true }).then((local)=>{
+            res.status(202).send(local)
+        }).catch(()=>{
+            res.status(400)
+        })
+    })
+
+LocalRouter.route('/beacons/:BeaconId')
+    .get(async (req, res) => {
+        let beaconLocals = await Local.find({ beacon: req.params.BeaconId })
+        
+        if (!beaconLocals) res.status(400).send("No local found within this beacon range")
+        console.log(beaconLocals)
+        res.status(200).send(beaconLocals)
+    })
 
 export default LocalRouter

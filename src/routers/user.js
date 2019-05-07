@@ -53,11 +53,11 @@ UserRouter.route("/login")
         try {
             const user = await Usuarios.findOne({ username: req.body.username }).select('+password')
             if (!user) {
-                return res.status(400).send({ message: "!User" });
+                return res.status(400).send({ message: "Usuario nao encontrado" });
             }
             if (!bcrypt.compareSync(req.body.password.toString(), user.password)) {
                 console.log("invalid password")
-                return res.status(400).send({ message: "invalid password" });
+                return res.status(400).send({ message: "Senha incorreta" });
             }
             user.password = ""
             res.send({
