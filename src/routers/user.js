@@ -60,6 +60,7 @@ UserRouter.route("/login")
                 return res.status(400).send({ message: "Senha incorreta" });
             }
             user.password = ""
+            console.log(user.username + " conectado")
             res.send({
                 username: user.username,
                 permission: user.permission,
