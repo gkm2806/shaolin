@@ -6,7 +6,7 @@ import Auth from "../auth/auth"
 
 const UserRouter = express.Router();
 
-
+//console.log(Usuarios, UserRouter)
 UserRouter.route('/')
     .get((req, res) => {
         Usuarios.find({}, (err, users) => {
