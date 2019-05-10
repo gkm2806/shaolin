@@ -5,8 +5,6 @@ import moment from "moment"
 const Schema = mongoose.Schema;
 
 const aulaModel = new Schema({
-    id: {type: String},
-    creationdate: {type: String, required: true},
     sala: {type: String},
     materia: {type: String},
     turma: {type: String},
@@ -14,16 +12,19 @@ const aulaModel = new Schema({
     horaFim: {type: String},
     dia: {type: String},
     professor: {type: String},
-    createdBy: {Type: String},
-    fixa: {Type: Boolean, default: false}
+
+    createdAt: {type: String, default: (()=> moment().format('YYYYMMDDhhmmss'))},
+    createdBy: {type: String, required: true},
+
+    color: {type: String, required: true},
+
+    fixa: {type: Boolean, default: false},
+    past: {type: Boolean, default: false}
 });
 
 aulaModel.pre("save", function(next) {
-    console.log(this)
     let today = moment.now()
-    console.log(today)
-
-
+    console.log("today: ", today)
     next();
 });
 

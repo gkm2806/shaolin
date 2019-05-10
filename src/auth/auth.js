@@ -15,7 +15,7 @@ export default function Auth(req,res,next){
     jwp.verify(token, process.env.HASH_SALT, (err,decoded) =>{
         if(err) return res.status(401).send({error: "Token invalido, boa tentativa!"})
         console.log("decoded: ", decoded)
-        req.body.userId = decoded.id
+        req.body.createdBy = decoded.id
         return next()
     })
 }
