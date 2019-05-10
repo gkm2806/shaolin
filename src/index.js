@@ -2,7 +2,7 @@ import express from 'express'
 import cors from "cors"
 import bodyParser from "body-parser"
 import "./database/mongoose"
-
+import "./purger/THE_PURGER"
 import UserRouter from "./routers/user"
 import aulaRouter from './routers/aulas';
 import ProfessorRouter from './routers/professores'
