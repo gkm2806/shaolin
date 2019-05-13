@@ -22,9 +22,9 @@ ModelRouter.route('/DELETEALL')
             res.send("deletado")
         })
     })
-ModelRouter.route('/:ModelId')
+ModelRouter.route('/:_id')
     .get(async (req, res) => {
-        let findUser = await Model.findOne({ _id: req.params.ModelId })
+        let findUser = await Model.findOne({ _id: req.params._id })
         if (!findUser) res.status(400).send("No turma found with this id")
         console.log(findUser._doc)
         res.status(200).send(findUser._doc)
@@ -39,3 +39,15 @@ ModelRouter.route('/:ModelId')
         req.model.save()
         res.json(req.model)
     })
+    .delete(async(req, res) => {
+        try{
+            await Model.deleteOne({_id: req.params._id})
+                .then(()=>
+                    res.sendStatus(200)
+                ).catch(()=>
+                    res.sendStatus(400)
+                )
+        }catch(e){
+            res.send(e)
+        }
+    });

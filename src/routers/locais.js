@@ -40,7 +40,18 @@ LocalRouter.route('/:LocalId')
         req.local.save()
         res.json(req.local)
     })
-
+    .delete(async(req, res) => {
+        try{
+            await Local.deleteOne({_id: req.params.LocalId})
+                .then(()=>
+                    res.sendStatus(200)
+                ).catch(()=>
+                    res.sendStatus(400)
+                )
+        }catch(e){
+            res.send(e)
+        }
+    });
 /***************  B E A C O N S ****************/
 
 LocalRouter.route('/:LocalId/beacon')

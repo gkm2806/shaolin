@@ -21,7 +21,7 @@ ProfessorRouter.route('/DELETEALL')
             res.send("deletado")
         })
     })
-ProfessorRouter.route('/:ProfessorId')
+ProfessorRouter.route('/:id')
     .put((req, res) => {
         /*
         req.Professor.title = req.body.title;
@@ -40,10 +40,15 @@ ProfessorRouter.route('/:ProfessorId')
         req.professor.save()
         res.json(req.professor)
     })
-
+    .get(async (req, res) => {
+        let findUser = await Local.findOne({ _id: req.params.LocalId })
+        if (!findUser) res.status(400).send("No Local found with this id")
+        console.log(findUser._doc)
+        res.status(200).send(findUser._doc)
+    })
     .delete(async(req, res) => {
         try{
-            await Professor.deleteOne({id: req.params.ProfessorId})
+            await Professor.deleteOne({_id: req.params.id})
                 .then(()=>
                     res.sendStatus(200)
                 ).catch(()=>
