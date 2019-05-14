@@ -85,10 +85,12 @@ aulaRouter.route('/:aulaId')
     })//patch
     .delete(async(req, res) => {
         try{
-            await Aula.deleteOne({id: req.params.aulaId})
-                .then(()=>
+            console.log(`Trying to delete ${req.params.aulaId}`)
+            await Aula.deleteOne({_id: req.params.aulaId})
+                .then(()=>{
+                    console.log(`${req.params.aulaId} deleted`)
                     res.sendStatus(200)
-                ).catch(()=>
+                }).catch(()=>
                     res.sendStatus(400)
                 )
         }catch(e){
