@@ -52,7 +52,7 @@ aulaRouter.route('/')
                         aulas.push(aula)
                     }else{
                         fail++
-                        res.status(409).send("Colisão de Local Detectada")
+                        res.status(418).send("Colisão de Local Detectada")
                         console.log("Colisão de Local Detectada")
                     }
                 }).catch((err)=>{
