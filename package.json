@@ -11,6 +11,7 @@
   "author": "gkm2806",
   "license": "ISC",
   "dependencies": {
+    "@babel/cli": "^7.4.4",
     "@babel/polyfill": "^7.4.4",
     "anychart": "~8.3.0",
     "bcrypt": "^3.0.6",
