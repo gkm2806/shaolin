@@ -42,7 +42,7 @@ ProfessorRouter.route('/:id')
     })
     .get(async (req, res) => {
         let findUser = await Local.findOne({ _id: req.params.LocalId })
-        if (!findUser) res.status(400).send("No Local found with this id")
+        if (!findUser) res.status(400).send("Nothing found")
         console.log(findUser._doc)
         res.status(200).send(findUser._doc)
     })
