@@ -21,12 +21,14 @@ UserRouter.route('/')
                 return res.status(400).send({ message: "Usuario Já existente" });
             }
             req.body.password = bcrypt.hashSync(req.body.password, 10)
-            let Usuario = new Usuarios({...req.body});
+            let Usuario = new Usuarios(req.body);
             
             await Usuario.save()
             Usuario.password = undefined
             console.log("Usuario \""+req.body.username+"\" criado")
-            res.status(201).send({...Usuario._doc, token:generateToken({id: Usuario._id})});
+            let token = generateToken({id: Usuario._id})
+            Usuario._doc.token = token
+            res.status(201).send(Usuario._doc);
         } catch (error) {
             console.log(error)
             res.status(500).send(error);

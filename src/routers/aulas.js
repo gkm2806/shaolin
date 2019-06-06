@@ -11,7 +11,6 @@ const aulaRouter = express.Router();
 const neutralAulas = ["PE","EAD","FIC"]
 
 const teste = async(req,res) => {
-    console.log("prof", req.body.professor)
     let creator = await User.findOne({_id: req.body.createdBy})
     if(creator.permission > 2){
         req.body.fixa = true
@@ -48,11 +47,10 @@ aulaRouter.route('/')
             const {sala,turma,professor,horaInicio, dia} = aula
             await Aula.find({"horaInicio": horaInicio, "dia": dia, 'sala':sala})
                 .then((result)=>{
-                    if(result.length === 0){
-                        aulas.push(aula)
-                    }else{
+                    if(!result.length === 0){
                         fail++
-                        res.status(418).send("Colisão de Local Detectada")
+                        result.aviso = "local"
+                        res.status(409).send(result)
                         console.log("Colisão de Local Detectada")
                     }
                 }).catch((err)=>{
@@ -63,11 +61,10 @@ aulaRouter.route('/')
             if(!neutralAulas.includes(turma)){
                 await Aula.find({"horaInicio": horaInicio, "dia": dia, 'turma':turma})
                     .then((result)=>{
-                        if(result.length === 0){
-                            aulas.push(aula)
-                        }else{
+                        if(!result.length === 0){
                             fail++
-                            res.status(409).send("Colisão de Turma Detectada")
+                            result.aviso = "turma"
+                            res.status(409).send(result)
                             console.log("Colisão de Turma Detectada")
                         }
                     }).catch((err)=>{
@@ -78,11 +75,10 @@ aulaRouter.route('/')
             }
             await Aula.find({"horaInicio": horaInicio, "dia": dia, 'professor':professor})
                 .then((result)=>{
-                    if(result.length === 0){
-                        aulas.push(aula)
-                    }else{
+                    if(!result.length === 0){
                         fail++
-                        res.status(409).send("Colisão de Professor Detectada")
+                        result.aviso = "professor"
+                        res.status(409).send(result)
                         console.log("Colisão de Professor Detectada")
                     }
                 }).catch((err)=>{
@@ -91,6 +87,7 @@ aulaRouter.route('/')
                     console.log("Erro")
                 })
             inicioMoment.add(45,"minutes")
+            aulas.push(aula)
         } 
         if(fail==0){
             for(var i = 0; i < aulas.length; i++){
