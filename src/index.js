@@ -10,6 +10,13 @@ import ProfessorRouter from './routers/professores'
 import LocalRouter from './routers/locais'
 import {ModelRouter as TurmaRouter} from './routers/turmas'
 
+require('ssl-root-cas/latest')
+  .inject()
+  .addFile(__dirname + '/AddTrustExternalCARoot.crt')
+  .addFile(__dirname + '/icpedusha2g2.crt')
+  .addFile(__dirname + '/suap.ifms.edu.br.crt')
+  require('https').globalAgent.options.ca = require('ssl-root-cas/latest').create();
+
 const port = process.env.PORT || 4000
 
 var app = express();

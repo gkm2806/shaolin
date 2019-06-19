@@ -11,13 +11,11 @@ const aulaRouter = express.Router();
 const neutralAulas = ["PE","EAD","FIC"]
 
 const teste = async(req,res) => {
-    let creator = await User.findOne({_id: req.body.createdBy})
-    if(creator.permission > 2){
+    if(req.permission > 2){
         req.body.fixa = true
-    }else if(req.body.professor != creator.username){
+    }else if(req.body.professor != req.body.nome){
         res.status(403).send("Professores não podem agendar aula para colegas!")
     }
-    req.body.createdBy = creator.username
 }
 
 aulaRouter.route('/')
@@ -29,13 +27,14 @@ aulaRouter.route('/')
     .post((req,res,next) => Auth(req,res,next))
     .post(async (req,res) => {
         if(!req.body.turma)res.status(400).send("No Turma provided")
+        let turmaColor = await Turma.findOne({ nome: req.body.turma })
+        if(!turmaColor)res.status(400).send("Turma não encontrada no sistema")
+
         let fail = 0
         let inicioMoment = moment(req.body.horaInicio,"HH:mm");
         let fimMoment = moment(req.body.horaFim,"HH:mm");
         let aulas = []
 
-        let turmaColor = await Turma.findOne({ nome: req.body.turma })
-        if(!turmaColor)res.status(400).send("Turma não encontrada no sistema")
         await teste(req, res)
         req.body.color = turmaColor.color
         while(inicioMoment.diff(fimMoment,"minutes") < -30){

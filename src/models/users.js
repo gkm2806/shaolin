@@ -1,12 +1,13 @@
 import mongoose from 'mongoose';
-import bcrypt from "bcrypt-nodejs"
-import "dotenv/config"
+import bcrypt from "bcrypt"
+import "dotenv"
+
 import jwp from "jsonwebtoken"
 
 const Schema = mongoose.Schema;
 
 export function generateToken(params={}){
-    return jwp.sign(params, process.env.HASH_SALT,{
+    return jwp.sign(params, "BaleiaQueCriaOProprioOceano",{
         expiresIn: 86400
     })
 }
