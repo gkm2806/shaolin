@@ -63,7 +63,6 @@ UserRouter.route('/:id')
 UserRouter.route("/login")
     .post(async (req, res) => {
         try {
-            console.log(req.body)
             if(req.body.isSuap == false){
                 const user = await Usuarios.findOne({ username: req.body.username }).select('+password')
                 if (!user) {
