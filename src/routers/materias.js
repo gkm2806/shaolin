@@ -24,10 +24,10 @@ ModelRouter.route('/DELETEALL')
     })
 ModelRouter.route('/:_id')
     .get(async (req, res) => {
-        let findUser = await Model.findOne({ _id: req.params._id })
-        if (!findUser) res.status(400).send("Nothing found")
-        console.log(findUser._doc)
-        res.status(200).send(findUser._doc)
+        let find = await Model.findOne({ _id: req.params._id })
+        if (!find) res.status(400).send("Nothing found")
+        console.log(find._doc)
+        res.status(200).send(find._doc)
     })
     .patch((req, res) => {
         if (req.body._id) {

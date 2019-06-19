@@ -9,6 +9,7 @@ import aulaRouter from './routers/aulas';
 import ProfessorRouter from './routers/professores'
 import LocalRouter from './routers/locais'
 import {ModelRouter as TurmaRouter} from './routers/turmas'
+import {ModelRouter as MateriaRouter} from './routers/materias'
 
 require('ssl-root-cas/latest')
   .inject()
@@ -31,5 +32,6 @@ app.use('/api/professores', ProfessorRouter);
 app.use('/api/locais', LocalRouter);
 app.use('/api/users', UserRouter);
 app.use('/api/turmas', TurmaRouter)
+app.use('/api/materias', MateriaRouter)
 console.log("PORT = ", port)
 app.listen(port, () => console.log(`Welcome aboard captain, all systems online!`))
