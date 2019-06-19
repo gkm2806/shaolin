@@ -11,7 +11,7 @@ const aulaRouter = express.Router();
 const neutralAulas = ["PE","EAD","FIC"]
 
 const teste = async(req,res) => {
-    if(req.permission > 2){
+    if(req.body.permission >= 3){
         req.body.fixa = true
     }else if(req.body.professor != req.body.nome){
         res.status(403).send("Professores não podem agendar aula para colegas!")
@@ -30,7 +30,7 @@ aulaRouter.route('/')
         let turmaColor = await Turma.findOne({ nome: req.body.turma })
         if(!turmaColor)res.status(400).send("Turma não encontrada no sistema")
 
-        let fail = 0
+        let fail = false
         let inicioMoment = moment(req.body.horaInicio,"HH:mm");
         let fimMoment = moment(req.body.horaFim,"HH:mm");
         let aulas = []
@@ -44,59 +44,68 @@ aulaRouter.route('/')
 
             let aula = new Aula(req.body);
             const {sala,turma,professor,horaInicio, dia} = aula
+            console.log(`sala: ${sala}, Inicio: ${horaInicio}, dia: ${dia}`)
+
             await Aula.find({"horaInicio": horaInicio, "dia": dia, 'sala':sala})
                 .then((result)=>{
-                    if(!result.length === 0){
-                        fail++
+                    if(!result.length == 0){
+                        console.log("Colisão de Local Detectada")
+                        fail = true
                         result.aviso = "local"
                         res.status(409).send(result)
-                        console.log("Colisão de Local Detectada")
+                        next()
                     }
                 }).catch((err)=>{
-                    fail++
+                    fail = true
                     res.status(405).send(err)
+                    next()
                     console.log("Erro")
                 })
             if(!neutralAulas.includes(turma)){
                 await Aula.find({"horaInicio": horaInicio, "dia": dia, 'turma':turma})
                     .then((result)=>{
-                        if(!result.length === 0){
-                            fail++
+                        if(!result.length == 0){
+                            console.log("Colisão de Turma Detectada")
+                            fail = true
                             result.aviso = "turma"
                             res.status(409).send(result)
-                            console.log("Colisão de Turma Detectada")
+                            next()
                         }
                     }).catch((err)=>{
-                        fail++
+                        fail = true
                         res.status(405).send(err)
+                        next()
                         console.log("Erro")
                     })
             }
             await Aula.find({"horaInicio": horaInicio, "dia": dia, 'professor':professor})
                 .then((result)=>{
-                    if(!result.length === 0){
-                        fail++
+                    if(!result.length == 0){
+                        console.log("Colisão de Professor Detectada")
+                        fail = true
                         result.aviso = "professor"
                         res.status(409).send(result)
-                        console.log("Colisão de Professor Detectada")
+                        next()
                     }
                 }).catch((err)=>{
-                    fail++
+                    fail = true
                     res.status(405).send(err)
+                    next()
                     console.log("Erro")
                 })
             inicioMoment.add(45,"minutes")
             aulas.push(aula)
         } 
-        if(fail==0){
+        if(fail == false){
             for(var i = 0; i < aulas.length; i++){
                 aulas[i].save()
                 console.log("Aula criada no sistema")
             }
-            console.log("Retornando aula")
+            console.log("Retornando aula", req.body.sala)
             res.status(201).send(aulas)
         }
     })
+
 aulaRouter.route('/DELETEALL')
     .get((req, res) => {
         Aula.deleteMany({},()=>{
