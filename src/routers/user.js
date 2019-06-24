@@ -79,7 +79,7 @@ UserRouter.route("/login")
                     token: generateToken({ id: user._id, nome: user.username, permission: user.permission })
                 });
             } else {
-                let response = axios.post(
+                axios.post(
                     `https://suap.ifms.edu.br/api/v2/autenticacao/token/`,
                     {
                         username: req.body.username,
@@ -88,38 +88,34 @@ UserRouter.route("/login")
                     {
                         httpsAgent: agent
                     }
-                ).catch((error) => {
+                ).then((response) => {
+                    axios.get(`https://suap.ifms.edu.br/api/v2/minhas-informacoes/meus-dados/`,
+                        {
+                            headers: { 'Authorization': `JWT ${response.data.token}` },
+                            httpsAgent: agent
+                        }
+                    ).then((userdata) => {
+                        let user = {
+                            username: userdata.data.nome_usual,
+                            permission: 1,
+                            siap: userdata.data.matricula,
+                            token: generateToken({ id: userdata.data.matricula, nome: userdata.data.nome_usual, permission: 2 }),
+                            photo: `https://suap.ifms.edu.br${userdata.data.url_foto_75x100}`
+                        }
+
+                        res.send(user).status(402)
+                    })
+                }).catch ((error) => {
                     console.log(error)
                     res.status(500).send(error);
                     next();
                 })
-                axios.get(`https://suap.ifms.edu.br/api/v2/minhas-informacoes/meus-dados/`,
-                    {
-                        headers: { 'Authorization': `JWT ${response.data.token}` },
-                        httpsAgent: agent
-                    }
-                ).then((userdata) => {
-                    let user = {
-                        username: userdata.data.nome_usual,
-                        permission: 1,
-                        siap: userdata.data.matricula,
-                        token: generateToken({ id: userdata.data.matricula, nome: userdata.data.nome_usual, permission: 2 }),
-                        photo: `https://suap.ifms.edu.br${userdata.data.url_foto_75x100}`
-                    }
-
-                    res.send(user).status(402)
-                }).catch((error) => {
-                    console.log(error)
-                    res.status(500).send(error);
-                    next();
-                })
-
             }
         } catch (error) {
-            console.log(error)
-            res.status(500).send(error);
-            next();
-        }
+    console.log(error)
+    res.status(500).send(error);
+    next();
+}
     });
 
 export default UserRouter
