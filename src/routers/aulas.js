@@ -131,6 +131,7 @@ aulaRouter.route('/:aulaId')
         req.aula.save()
         res.json(req.aula)
     })//patch
+    .delete((req,res,next) => Auth(req,res,next))
     .delete(async(req, res) => {
         try{
             console.log(`Trying to delete ${req.params.aulaId}`)
